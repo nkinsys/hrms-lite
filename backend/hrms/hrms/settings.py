@@ -26,8 +26,9 @@ SECRET_KEY = 'django-insecure-n3=tx&*0xiepx7r-t&qdp9k6sd2qm&@e^%r+!nt+3o!i#o*w=0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 
 # Application definition
 
@@ -88,22 +89,15 @@ WSGI_APPLICATION = 'hrms.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {}
-}
-
-if 'DATABASE_URL' in os.environ:
-    DATABASES['default'] = dj_database_url.config(
-        conn_max_age=500,
-        conn_health_checks=True,
-    )
-else:
-    # Fallback to default SQLite for local development (if not using local MySQL)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('MYSQLDATABASE'),
+        'USER': os.getenv('MYSQLUSER'),
+        'PASSWORD': os.getenv('MYSQLPASSWORD'),
+        'HOST': os.getenv('MYSQLHOST'),
+        'PORT': os.getenv('MYSQLPORT'),
     }
+}
 
 
 # Password validation
