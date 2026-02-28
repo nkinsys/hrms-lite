@@ -1,6 +1,6 @@
 HRMS Lite
 =========
-![License: GNU](https://img.shields.io/badge/License-GNU-green.svg)   ![Python](https://img.shields.io/badge/Python-3.12-blue)   ![Django](https://img.shields.io/badge/Django-6.0-brightgreen)   ![React](https://img.shields.io/badge/React-18.2-blueviolet)
+![License: GNU](https://img.shields.io/badge/License-GNU-green.svg)   ![Python](https://img.shields.io/badge/Python-3.12-blue)   ![Django](https://img.shields.io/badge/Django-6.0-brightgreen)   ![React](https://img.shields.io/badge/React-19.2-blueviolet)
 **HRMS Lite** is a lightweight Human Resource Management System (HRMS) with a **React** frontend and a **Django** backend. It provides basic employee management, attendance tracking, and department-wise reporting functionality.
 
 * * *
@@ -107,9 +107,3 @@ Open a Pull Request.
 License
 -------
 This project is licensed under the GNU License.
-
-* * *
-
-Author
-------
-Your Name – Your contact or portfolio link
