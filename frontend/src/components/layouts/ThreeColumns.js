@@ -69,22 +69,22 @@ export default class ThreeColumns extends Empty {
                 <DocumentMeta {...this.state.meta}></DocumentMeta>
 
                 <Grid container className="columns">
-                    <Grid item xs={12} md={9} xl={10} className="column main">
+                    <Grid size={{ xs: 12, md: 9, xl: 10 }} className="column main">
                         <Header pageTitle={this.props.pageTitle}></Header>
                         <Box id="main-content" className="page-main">
                             <Message></Message>
                             <Grid container>
-                                <Grid item xs={12} md={9} xl={10} py={2} pl={2} pr={1} className="content">
+                                <Grid size={{ xs: 12, md: 9, xl: 10 }} py={2} pl={2} pr={1} className="content">
                                     <Column blocks={this.state.columns.main}></Column>
                                 </Grid>
-                                <Grid item xs={12} md={3} xl={2} py={2} pl={1} pr={2} className="sidebar sidebar-additional">
+                                <Grid size={{ xs: 12, md: 3, xl: 2 }} py={2} pl={1} pr={2} className="sidebar sidebar-additional">
                                     <Column blocks={this.state.columns.sidebarAdditional}></Column>
                                 </Grid>
                             </Grid>
                         </Box>
                         <Footer></Footer>
                     </Grid>
-                    <Grid item xs={12} md={3} xl={2} className="sidebar sidebar-main">
+                    <Grid size={{ xs: 12, md: 3, xl: 2 }} className="sidebar sidebar-main">
                         <Column blocks={this.state.columns.sidebarMain}></Column>
                     </Grid>
                 </Grid>

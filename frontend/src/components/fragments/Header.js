@@ -95,7 +95,7 @@ function Header({ pageTitle }) {
                         pt: 1, pr: 1, pb: 2, pl: 2
                     }}>
                         <Grid container>
-                            <Grid item xs={12} sx={{ textAlign: "right" }}>
+                            <Grid size={12} sx={{ textAlign: "right" }}>
                                 <Button id="logout" onClick={() => logout()}
                                     sx={[
                                         { color: "inherit", textTransform: "capitalize", fontSize: "1rem" },
@@ -103,13 +103,13 @@ function Header({ pageTitle }) {
                                     ]}
                                 >Logout</Button>
                             </Grid>
-                            <Grid item sx={{ mr: 2 }}>
+                            <Grid sx={{ mr: 2 }}>
                                 <Avatar
                                     alt={user.full_name}
                                     sx={{ width: "88px", height: "88px" }}
                                 />
                             </Grid>
-                            <Grid item sx={{ mt: 1, maxWidth: "calc(100% - 104px)", flex: "1 1 auto" }}>
+                            <Grid sx={{ mt: 1, maxWidth: "calc(100% - 104px)", flex: "1 1 auto" }}>
                                 <Typography title={user.full_name}
                                     sx={{ fontSize: "18px", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
                                     {user.full_name}

@@ -2,8 +2,7 @@ import React, { useState } from "react";
 
 const AdminUser = {
     full_name: 'HRMS Lite Admin',
-    photo: null,
-    role: 'ROLE_ADMIN'
+    photo: null
 };
 
 export const UserContext = React.createContext(AdminUser);

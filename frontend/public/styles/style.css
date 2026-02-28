@@ -1,0 +1,42 @@
+#root:not(.anonymous) .page-footer {
+    position: sticky;
+    width: 100%;
+    bottom: 0;
+}
+
+.anonymous .page-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.anonymous .page-title-wrapper {
+    margin-top: 0;
+    text-align: center;
+}
+
+.anonymous a {
+    text-decoration: none;
+}
+
+.anonymous a:hover,
+.anonymous a:focus,
+.anonymous a:active {
+    text-decoration: underline;
+}
+
+@media all and (min-width: 768px) {
+    .column.main {
+        flex-grow: 1;
+        max-width: unset;
+    }
+
+    .sidebar-main {
+        flex-basis: auto !important;
+    }
+}
+
+#registrationForm .password-notes {
+    padding-top: 0 !important;
+}

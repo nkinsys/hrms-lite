@@ -1,7 +1,7 @@
 import { Menu, MenuItem, Sidebar, SubMenu } from "react-pro-sidebar";
 import { NavLink } from "react-router-dom";
 import { tokens } from "../../scripts/theme";
-import { CloseRounded, FormatListBulletedRounded, GroupsRounded, HomeOutlined, ManageAccountsRounded, MenuRounded, PersonAddAltRounded, SortByAlphaRounded } from "@mui/icons-material";
+import { CloseRounded, GroupsRounded, HomeOutlined, ManageAccountsRounded, MenuRounded, PersonAddAltRounded, HowToReg, BallotRounded } from "@mui/icons-material";
 import { Avatar, Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useState } from "react";
 import { useStorage } from "../../services/Storage";
@@ -103,9 +103,6 @@ function Nav({ user }) {
                             >
                                 {user.full_name}
                             </Typography>
-                            <Typography variant="h5" color={colors.redAccent[500]}>
-                                {user.role.replace('ROLE_', '')}
-                            </Typography>
                         </Box>
                     </Box>
                 )}
@@ -132,14 +129,14 @@ function Nav({ user }) {
                     )}
                     <Item
                         label="Dashboard"
-                        link="/dashboard"
+                        link="/"
                         icon={<HomeOutlined />}
                     />
-                    <SubMenuItem label="Employee" link="/employees" icon={<FormatListBulletedRounded />}>
+                    <SubMenuItem label="Employee" link="/employees" icon={<GroupsRounded />}>
                         <Item
                             label="Manage"
                             link="/employees"
-                            icon={<SortByAlphaRounded />}
+                            icon={<ManageAccountsRounded />}
                         />
                         <Item
                             label="Register"
@@ -147,16 +144,16 @@ function Nav({ user }) {
                             icon={<PersonAddAltRounded />}
                         />
                     </SubMenuItem>
-                    <SubMenuItem label="Attendance" link="/attendance/today" icon={<GroupsRounded />}>
+                    <SubMenuItem label="Attendance" link="/attendance" icon={<HowToReg />}>
                         <Item
                             label="Today's Attendance"
                             link="/attendance/today"
-                            icon={<ManageAccountsRounded />}
+                            icon={<HowToReg />}
                         />
                         <Item
                             label="ALL Attendance"
                             link="/attendance"
-                            icon={<PersonAddAltRounded />}
+                            icon={<BallotRounded />}
                         />
                     </SubMenuItem>
                 </Menu>

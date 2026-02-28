@@ -94,17 +94,17 @@ function Index() {
     ];
 
     return (
-        <TwoColumnsLeft meta={{ title: "Manage Members" }} pageTitle="Manage Members">
+        <TwoColumnsLeft meta={{ title: "Manage Employees" }} pageTitle="Manage Employees">
             <Box textAlign="right">
                 <Button variant="contained"
                     size="large"
-                    onClick={() => navigate("/members/register")}
+                    onClick={() => navigate("/employees/register")}
                     color="secondary"
                     sx={[
                         { backgroundColor: theme.palette.mode === MODE_DARK ? '' : colors.primary[400] },
                         { '&:hover': { backgroundColor: theme.palette.mode === MODE_DARK ? '' : colors.primary[900] } },
                     ]}
-                >Add New Member</Button>
+                >Add New Employee</Button>
             </Box>
             <DataGrid columns={columns} url={EMPLOYEES}></DataGrid>
         </TwoColumnsLeft>

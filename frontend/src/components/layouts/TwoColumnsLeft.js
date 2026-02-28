@@ -59,7 +59,7 @@ export default class TwoColumnsLeft extends Empty {
             <>
                 <DocumentMeta {...this.state.meta}></DocumentMeta>
                 <Grid container className="columns">
-                    <Grid item xs={12} md={9} xl={10} className="column main">
+                    <Grid size={{ xs: 12, md: 9, xl: 10 }} className="column main">
                         <Header pageTitle={this.props.pageTitle}></Header>
                         <Box px={2} id="main-content" className="page-main">
                             <Message></Message>
@@ -67,7 +67,7 @@ export default class TwoColumnsLeft extends Empty {
                         </Box>
                         <Footer></Footer>
                     </Grid>
-                    <Grid item xs={12} md={3} xl={2} className="sidebar sidebar-main">
+                    <Grid size={{ xs: 12, md: 3, xl: 2 }} className="sidebar sidebar-main">
                         <Column blocks={this.state.columns.sidebarMain}></Column>
                     </Grid>
                 </Grid>

@@ -20,7 +20,7 @@ export default class OneColumn extends Empty {
             <>
                 <DocumentMeta {...this.state.meta}></DocumentMeta>
                 <Grid container className="columns">
-                    <Grid item className="column main" xs={12}>
+                    <Grid className="column main" size={12}>
                         <Header></Header>
                         <Box id="main-content" className="page-main">
                             {
