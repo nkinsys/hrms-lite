@@ -49,16 +49,14 @@ function Index() {
             headerName: "Created At",
             resizable: false,
             type: "dateTime",
-            minWidth: 155,
-            valueGetter: (value) => value && new Date(value)
+            minWidth: 155
         },
         {
             field: "updated_at",
             headerName: "Updated At",
             resizable: false,
             type: "dateTime",
-            minWidth: 155,
-            valueGetter: (value) => value && new Date(value)
+            minWidth: 155
         },
         {
             field: 'actions',
@@ -91,9 +89,9 @@ function Index() {
                 />,
                 <ActionCellItem
                     link={"/employees/" + params.id + "/attendance"}
-                    label="Issue"
+                    label="Attendance"
                     icon={<SendRounded />}
-                    title="Issue"
+                    title="Attendance"
                     sx={{
                         color: theme.palette.mode === MODE_DARK ? theme.palette.error.main : colors.grey[500]
                     }}

@@ -121,15 +121,17 @@ function DataGrid({ columns, url, defaultParams, identifier, multiselect, noRows
         if (searchCriteria.filter.hasOwnProperty('items')) {
             params.filter['items'] = [];
             searchCriteria.filter.items.forEach((item) => {
-                item = {
-                    'field': filterFields.current[item.field],
-                    'operator': item.operator,
-                    'value': item.value
-                };
-                if (operators.hasOwnProperty(item['operator'])) {
-                    item['operator'] = operators[item['operator']];
+                if (item.value !== undefined) {
+                    item = {
+                        'field': filterFields.current[item.field],
+                        'operator': item.operator,
+                        'value': item.value
+                    };
+                    if (operators.hasOwnProperty(item['operator'])) {
+                        item['operator'] = operators[item['operator']];
+                    }
+                    params.filter.items.push(item);
                 }
-                params.filter.items.push(item);
             });
         }
 
