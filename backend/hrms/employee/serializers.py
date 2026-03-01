@@ -7,23 +7,20 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    department = DepartmentSerializer(read_only=True)  # Avoid fetching again
+
     class Meta:
         model = Employee
         fields = "__all__"
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        if (instance.department):
-            representation['department'] = DepartmentSerializer(instance.department).data  # Include full department data
+        representation['attendance_status'] = getattr(instance, "attendance_status", None)
         return representation
 
 class AttendanceSerializer(serializers.ModelSerializer):
+    employee = EmployeeSerializer(read_only=True)  # Avoid fetching employee again
+
     class Meta:
         model = Attendance
         fields = "__all__"
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        if (instance.employee):
-            representation['employee'] = EmployeeSerializer(instance.employee).data  # Include full employee data
-        return representation

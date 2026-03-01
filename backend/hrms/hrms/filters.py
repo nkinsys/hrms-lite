@@ -28,6 +28,8 @@ class CustomFilterBackend(BaseFilterBackend):
                         operator = operator[1:]
                         exclude[field + '__' + operator] = value
                     else:
+                        if (operator == 'isnull'):
+                            value = True if (value == 1 or value == 'True') else False
                         filter[field + '__' + operator] = value
                 else:
                     raise ParseError("Invalid filter params")

@@ -1,7 +1,7 @@
 from datetime import date
 from django.shortcuts import render
-from django.db.models import Count, Q, F
-from employee.models import Employee, Attendance
+from django.db.models import Count, Q, F, FilteredRelation
+from employee.models import Department, Employee, Attendance
 from employee.serializers import EmployeeSerializer, AttendanceSerializer
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -12,9 +12,22 @@ class EmployeeModelViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
 
+    def get_queryset(self):
+        today = date.today()
+        queryset = Employee.objects.annotate(
+            today_attendance=FilteredRelation('attendance', condition=Q(attendance__date=today))
+        ).annotate(
+            attendance_status=F('today_attendance__status')
+        ).select_related('department')
+        return queryset
+
 class AttendanceModelViewSet(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
+
+    def get_queryset(self):
+        queryset = Attendance.objects.select_related('employee', 'employee__department')
+        return queryset
 
     def employee_attendance(self, request, pk, *args, **kwargs):
         instances = Attendance.objects.filter(
@@ -40,7 +53,7 @@ class AttendanceModelViewSet(viewsets.ModelViewSet):
         data = queryset.values(
             'date'
         ).annotate(
-            total_employees=Count('employee', distinct=True),  # total employees recorded for that day
+            total_employees=Count('employee', distinct=True),
             present=Count('id', filter=Q(status=Attendance.StatusChoices.PRESENT)),
             absent=Count('id', filter=Q(status=Attendance.StatusChoices.ABSENT)),
         ).order_by(*sort_order)
