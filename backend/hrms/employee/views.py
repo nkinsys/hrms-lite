@@ -1,10 +1,13 @@
-from datetime import date
+from datetime import date, timedelta
 from django.shortcuts import render
 from django.db.models import Count, Q, F, FilteredRelation
+from django.utils import timezone
+from django.utils.dateparse import parse_date
 from employee.models import Department, Employee, Attendance
 from employee.serializers import EmployeeSerializer, AttendanceSerializer
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.exceptions import ParseError, NotFound, ValidationError
 
 # Create your views here.
 
@@ -29,8 +32,28 @@ class AttendanceModelViewSet(viewsets.ModelViewSet):
         queryset = Attendance.objects.select_related('employee', 'employee__department')
         return queryset
 
+    def create(self, request, *args, **kwargs):
+        attendanceDate = request.data.get("date", date.today())
+        if isinstance(attendanceDate, str):
+            attendanceDate = parse_date(attendanceDate)
+        if Attendance.objects.filter(employee = request.data.get("employee"), date = attendanceDate).exists():
+            raise ParseError(f"Employee attendance for {attendanceDate.strftime("%-d %b, %Y")} is already marked. Please verify and try again.")
+        return super().create(request, args, kwargs)
+    
+    def update(self, request, *args, **kwargs):
+        attendance = self.get_object()
+        if attendance.date < timezone.now().date() - timedelta(days=7):
+            raise ParseError("The attendance date is beyond the 7-day update window and can no longer be modified.")
+        return super().update(request, args, kwargs)
+    
+    def partial_update(self, request, *args, **kwargs):
+        attendance = self.get_object()
+        if attendance.date < timezone.now().date() - timedelta(days=7):
+            raise ParseError("The attendance date is beyond the 7-day update window and can no longer be modified.")
+        return super().partial_update(request, args, kwargs)
+
     def employee_attendance(self, request, pk, *args, **kwargs):
-        instances = Attendance.objects.filter(
+        instances = self.get_queryset().filter(
             employee = pk,
         ).all()
         serializer = self.get_serializer(instances, many=True)

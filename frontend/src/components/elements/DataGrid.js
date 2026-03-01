@@ -36,6 +36,7 @@ function DataGrid({ columns, url, defaultParams, identifier, multiselect, noRows
     const totalCount = useRef(null);
     const [pageinfo, setPageInfo] = useState({ rows: [], page: 0, hasNextPage: false, totalRowCount: 0 });
     const filterFields = useRef([]);
+    const sortFields = useRef([]);
     const searchCriteria = useRef({
         pagination: {
             pageSize: 20,
@@ -70,10 +71,18 @@ function DataGrid({ columns, url, defaultParams, identifier, multiselect, noRows
         }
 
         if (column.filterable !== false) {
-            if (column.filterFieldName) {
-                filterFields.current[column.field] = column.filterFieldName;
+            if (column.serverFieldName) {
+                filterFields.current[column.field] = column.serverFieldName;
             } else {
                 filterFields.current[column.field] = column.field;
+            }
+        }
+
+        if (column.sortable !== false) {
+            if (column.serverFieldName) {
+                sortFields.current[column.field] = column.serverFieldName;
+            } else {
+                sortFields.current[column.field] = column.field;
             }
         }
     });
@@ -152,7 +161,7 @@ function DataGrid({ columns, url, defaultParams, identifier, multiselect, noRows
 
         searchCriteria.sort.forEach(function (item) {
             item = {
-                "field": item.field,
+                "field": sortFields.current[item.field],
                 "sort": item.sort
             };
             params.sort.push(item);

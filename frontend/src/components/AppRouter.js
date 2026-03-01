@@ -21,11 +21,11 @@ export default class AppRouter extends React.Component {
                         <Route path="register" element={<AddorEditEmployee />} />
                         <Route path=":pk/edit" element={<AddorEditEmployee />} />
                         <Route path=":pk/attendance" element={<EmployeeAttendance />} />
-                        <Route path=":employeeId/attendance/register" element={<AddorEditAttendance />} />
+                        <Route path=":employeeId/attendance/register/:period" element={<AddorEditAttendance />} />
                     </Route>
                     <Route path="attendance">
                         <Route index element={<Attendance />} />
-                        <Route path="register" element={<MarkAttendance />} />
+                        <Route path="register/:period" element={<MarkAttendance />} />
                         <Route path=":pk/edit" element={<AddorEditAttendance />} />
                     </Route>
                     <Route path="*" element={<NoPage />} />

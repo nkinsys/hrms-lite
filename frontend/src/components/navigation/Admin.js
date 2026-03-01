@@ -147,7 +147,12 @@ function Nav({ user }) {
                     <SubMenuItem label="Attendance" link="/attendance" icon={<HowToReg />}>
                         <Item
                             label="Mark Today's Attendance"
-                            link="/attendance/register"
+                            link="/attendance/register/current"
+                            icon={<HowToReg />}
+                        />
+                        <Item
+                            label="Mark Previous Attendance"
+                            link="/attendance/register/previous"
                             icon={<HowToReg />}
                         />
                         <Item

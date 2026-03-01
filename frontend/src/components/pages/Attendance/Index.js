@@ -11,12 +11,13 @@ function Index() {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const navigate = useNavigate();
+    const minDate = dayjs().subtract(7, 'day');
 
     const columns = [
         {
             field: "name",
             headerName: "Employee Name",
-            filterFieldName: "employee__name",
+            serverFieldName: "employee__name",
             flex: 1,
             type: "string",
             minWidth: 120,
@@ -25,7 +26,7 @@ function Index() {
         {
             field: "email",
             headerName: "Email",
-            filterFieldName: "employee__email",
+            serverFieldName: "employee__email",
             flex: 1,
             type: "string",
             minWidth: 200,
@@ -34,7 +35,7 @@ function Index() {
         {
             field: "department",
             headerName: "Department",
-            filterFieldName: "employee__department__name",
+            serverFieldName: "employee__department__name",
             flex: 1,
             type: "string",
             minWidth: 150,
@@ -83,7 +84,7 @@ function Index() {
             minWidth: 115,
             getActions: (params) => {
                 const actions = [];
-                if (dayjs(params.date).isAfter(dayjs().subtract(7, 'day'))) {
+                if (dayjs(params.row.date).isAfter(minDate)) {
                     actions.push(
                         <ActionCellItem
                             link={"/attendance/" + params.id + "/edit"}
@@ -106,7 +107,7 @@ function Index() {
             <Box textAlign="right">
                 <Button variant="contained"
                     size="large"
-                    onClick={() => navigate("/attendance/register")}
+                    onClick={() => navigate("/attendance/register/current")}
                     color="secondary"
                     sx={[
                         { backgroundColor: theme.palette.mode === MODE_DARK ? '' : colors.primary[400] },

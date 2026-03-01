@@ -4,6 +4,9 @@ import { Box, Button, CircularProgress, Grid, Typography, useTheme, MenuItem, Te
 import { MODE_DARK, tokens } from "../../../scripts/theme";
 import { EMPLOYEE_GET, ATTENDANCE_ADD, ATTENDANCE_GET, ATTENDANCE_UPDATE } from "../../../constants/URL";
 import { useNavigate, useParams } from "react-router-dom";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Api from "../../../services/Api";
 import { useEffect, useState } from "react";
 import { useRef } from "react";
@@ -17,11 +20,11 @@ import validationSchema from "../../../scripts/validation-schema";
  * @returns {Object}
  * @throws {Error}
  */
-function getEmployee(pk) {
+function getEmployee(pk, period) {
     return Api.get(EMPLOYEE_GET.replace(":pk", pk), {}, {})
         .then((response) => {
             const employee = response.responseJSON;
-            if (employee.attendance_status !== null) {
+            if (period === 'current' && employee.attendance_status !== null) {
                 const status = employee.attendance_status === 1 ? 'Present' : 'Absent';
                 throw new Error(`Employee today's attendance is already marked ${status}. Please verify and try again.`);
             }
@@ -46,7 +49,7 @@ function getAttendance(pk) {
     return Api.get(ATTENDANCE_GET.replace(":pk", pk), {}, {})
         .then((response) => {
             const attendance = response.responseJSON;
-            const minDate = dayjs().subtract('7', 'day');
+            const minDate = dayjs().subtract(7, 'day');
             if (dayjs(attendance.date).isBefore(minDate)) {
                 throw new Error("The attendance date is beyond the 7-day update window and can no longer be modified.");
             }
@@ -63,7 +66,7 @@ function getAttendance(pk) {
 }
 
 function Edit() {
-    const { pk, employeeId } = useParams()
+    const { pk, employeeId, period } = useParams();
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const navigate = useNavigate();
@@ -74,11 +77,18 @@ function Edit() {
     const attendanceSchema = useRef(null);
 
     if (!attendanceSchema.current) {
-        attendanceSchema.current = validationSchema.createSchema({
+        const schema = {
             rules: {
                 status: "required"
             }
-        });
+        };
+        if (!pk && period !== 'current') {
+            schema.rules['date'] = {
+                type: "date",
+                required: true
+            };
+        }
+        attendanceSchema.current = validationSchema.createSchema(schema);
     }
 
     useEffect(() => {
@@ -93,9 +103,9 @@ function Edit() {
                     pageTitle.current = `${attendance.current.employee.name} - ${attendance.current.date.format('D MMM, YYYY')} Attendance`
                 });
             } else {
-                request = getEmployee(employeeId).then((data) => {
+                request = getEmployee(employeeId, period).then((data) => {
                     attendance.current = {
-                        date: dayjs(),
+                        date: period === 'current' ? dayjs() : null,
                         employee: data,
                         status: ''
                     };
@@ -103,12 +113,16 @@ function Edit() {
             }
 
             request.then(() => {
-                pageTitle.current = `${attendance.current.employee.name} - ${attendance.current.date.format('D MMM, YYYY')} Attendance`
+                if (pk || period === 'current') {
+                    pageTitle.current = `${attendance.current.employee.name} - ${attendance.current.date.format('D MMM, YYYY')} Attendance`
+                } else {
+                    pageTitle.current = `${attendance.current.employee.name} Attendance`
+                }
             }).catch((err) => {
                 setError(err.message);
             }).finally(() => setLoading(false));
         }
-    }, [employeeId, pk, loading, error]);
+    }, [employeeId, pk, period, loading, error]);
 
     async function handleSubmit(values, actions) {
         setError('');
@@ -135,7 +149,7 @@ function Edit() {
             alert({
                 title: "Success",
                 content: `Attendance for ${name} on ${date} has been successfully marked as ${status}.`,
-                callback: () => navigate(pk ? "/attendance" : "/attendance/register")
+                callback: () => navigate(pk ? "/attendance" : ("/attendance/register/" + period))
             });
         }).catch((response) => {
             if (response.responseJSON && response.responseJSON.detail) {
@@ -155,7 +169,17 @@ function Edit() {
                 className={!attendance.current ? "column-main-center" : ''}
                 sx={{ textAlign: "center", color: "error.main", mb: 1.5 }}
             >
-                <span>{error}</span>
+                <Grid container>
+                    <Grid size={12}>
+                        <span>{error}</span>
+                    </Grid>
+                    {!attendance.current && <Grid size={12}>
+                        <Button
+                            onClick={() => navigate(pk ? "/attendance" : ("/attendance/register/" + period))}
+                            color={theme.palette.mode === MODE_DARK ? 'secondary' : 'primary'}
+                        >Back</Button>
+                    </Grid>}
+                </Grid>
             </Box>}
             {!loading && attendance.current &&
                 <Grid container justifyContent="center">
@@ -165,7 +189,7 @@ function Edit() {
                             validationSchema={attendanceSchema.current}
                             onSubmit={handleSubmit}
                         >
-                            {({ values, errors, touched, isSubmitting, handleBlur, handleChange }) => (
+                            {({ values, errors, touched, isSubmitting, handleBlur, handleChange, setFieldValue, setFieldTouched }) => (
                                 <Form id="attendanceForm" noValidate autoComplete="off">
                                     <Grid container rowSpacing={3} columnSpacing={{ md: 3 }}>
                                         <Grid container justifyContent="flex-start">
@@ -181,9 +205,56 @@ function Edit() {
                                             <Grid size={12}>
                                                 Department: {attendance.current.employee.department.name}
                                             </Grid>
-                                            <Grid size={12}>
+                                            {(pk || period === 'current') && <Grid size={12}>
                                                 Date: {attendance.current.date.format("MMMM D, YYYY")}
-                                            </Grid>
+                                            </Grid>}
+                                            {(!pk && period !== 'current') && <Grid size={12}>
+                                                <Grid size={{ xs: 12, md: 4 }}>
+                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                        <DatePicker
+                                                            label="Date"
+                                                            inputFormat="DD/MM/YYYY"
+                                                            name="date"
+                                                            defaultValue={values.date}
+                                                            maxDate={dayjs().subtract('1', 'day')}
+                                                            onClose={() => {
+                                                                setFieldTouched('date', true, false);
+                                                            }}
+                                                            onChange={(value, context) => {
+                                                                setFieldValue('date', value);
+                                                                setFieldTouched('date', true, false);
+                                                                attendance.current.date = value;
+                                                            }}
+                                                            slotProps={{
+                                                                textField: {
+                                                                    id: "date",
+                                                                    name: "date",
+                                                                    value: values.date,
+                                                                    required: true,
+                                                                    fullWidth: true,
+                                                                    error: !!touched.date && !!errors.date,
+                                                                    helperText: touched.date && errors.date,
+                                                                    sx: {
+                                                                        '.Mui-focused:not(.Mui-error) .MuiOutlinedInput-notchedOutline': {
+                                                                            borderColor: theme.palette.info.main
+                                                                        },
+                                                                        '.MuiInputLabel-root.Mui-focused:not(.Mui-error)': {
+                                                                            color: theme.palette.info.main
+                                                                        }
+                                                                    }
+                                                                },
+                                                                layout: {
+                                                                    sx: {
+                                                                        '.MuiButtonBase-root.MuiButton-root': {
+                                                                            color: 'inherit'
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }}
+                                                        />
+                                                    </LocalizationProvider>
+                                                </Grid>
+                                            </Grid>}
                                             <Grid size={{ xs: 12, md: 4 }}>
                                                 <TextField
                                                     variant="outlined"
@@ -218,7 +289,7 @@ function Edit() {
                                                 disabled={isSubmitting}
                                                 sx={{ mb: 3 }}
                                                 onClick={() => {
-                                                    navigate(pk ? "/attendance" : "/attendance/register");
+                                                    navigate(pk ? "/attendance" : ("/attendance/register/" + period));
                                                 }}
                                             >
                                                 <Typography variant="button"

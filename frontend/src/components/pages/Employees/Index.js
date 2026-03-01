@@ -38,7 +38,7 @@ function Index() {
         {
             field: "department",
             headerName: "Department",
-            filterFieldName: "department__name",
+            serverFieldName: "department__name",
             flex: 1,
             type: "string",
             minWidth: 200,
@@ -112,10 +112,10 @@ function Index() {
                 if (params.row.attendance_status === null) {
                     actions.push(
                         <ActionCellItem
-                            link={"/employees/" + params.id + "/attendance/register"}
-                            label="Mark Attendance"
+                            link={"/employees/" + params.id + "/attendance/register/current"}
+                            label="Mark Today's Attendance"
                             icon={<HowToReg />}
-                            title="Mark Attendance"
+                            title="Mark Today's Attendance"
                             sx={{
                                 color: theme.palette.mode === MODE_DARK ? theme.palette.error.main : colors.grey[500]
                             }}
