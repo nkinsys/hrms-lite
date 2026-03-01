@@ -1,9 +1,11 @@
 import TwoColumnsLeft from "../../layouts/TwoColumnsLeft";
 import { Box, Button, useTheme } from "@mui/material";
-import DataGrid from "../../elements/DataGrid";
+import { EditRounded } from "@mui/icons-material";
+import DataGrid, { ActionCellItem } from "../../elements/DataGrid";
 import { MODE_DARK, tokens } from "../../../scripts/theme";
 import { ATTENDANCE } from "../../../constants/URL";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 
 function Index() {
     const theme = useTheme();
@@ -68,6 +70,34 @@ function Index() {
             resizable: false,
             type: "dateTime",
             minWidth: 155
+        },
+        {
+            field: 'actions',
+            align: "center",
+            headerName: "Actions",
+            headerAlign: "center",
+            filterable: false,
+            sortable: false,
+            resizable: false,
+            type: 'actions',
+            minWidth: 115,
+            getActions: (params) => {
+                const actions = [];
+                if (dayjs(params.date).isAfter(dayjs().subtract(7, 'day'))) {
+                    actions.push(
+                        <ActionCellItem
+                            link={"/attendance/" + params.id + "/edit"}
+                            label="Edit"
+                            icon={<EditRounded />}
+                            title="Edit"
+                            sx={{
+                                color: theme.palette.mode === MODE_DARK ? theme.palette.secondary.main : colors.grey[500]
+                            }}
+                        />
+                    );
+                }
+                return actions;
+            },
         },
     ];
 

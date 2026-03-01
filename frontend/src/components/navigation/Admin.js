@@ -151,7 +151,7 @@ function Nav({ user }) {
                             icon={<HowToReg />}
                         />
                         <Item
-                            label="ALL Attendance"
+                            label="Manage Attendance"
                             link="/attendance"
                             icon={<BallotRounded />}
                         />

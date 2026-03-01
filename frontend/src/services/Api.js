@@ -162,6 +162,18 @@ const Api = function () {
             }
         },
 
+        patch: function (url, payload = {}, headers = {}, async = true) {
+            if (!headers.hasOwnProperty("Content-Type")) {
+                headers["Content-Type"] = "application/json";
+            }
+
+            if (async) {
+                return this.requestAsync(url, "PATCH", payload, headers);
+            } else {
+                return this.request(url, "PATCH", payload, headers);
+            }
+        },
+
         delete: function (url, headers = {}, async = true) {
             if (async) {
                 return this.requestAsync(url, "DELETE", {}, headers);

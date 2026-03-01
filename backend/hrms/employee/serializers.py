@@ -7,7 +7,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class EmployeeSerializer(serializers.ModelSerializer):
-    department = DepartmentSerializer(read_only=True)  # Avoid fetching again
+    department = DepartmentSerializer()
 
     class Meta:
         model = Employee
@@ -18,9 +18,32 @@ class EmployeeSerializer(serializers.ModelSerializer):
         representation['attendance_status'] = getattr(instance, "attendance_status", None)
         return representation
 
+class EmployeeReadOnlySerializer(serializers.ModelSerializer):
+    department = DepartmentSerializer(read_only=True)
+
+    class Meta:
+        model = Employee
+        fields = '__all__'
+        read_only_fields = [f.name for f in Employee._meta.fields if f.name != 'id']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['attendance_status'] = getattr(instance, "attendance_status", None)
+        return representation
+
 class AttendanceSerializer(serializers.ModelSerializer):
-    employee = EmployeeSerializer(read_only=True)  # Avoid fetching employee again
+    employee = serializers.PrimaryKeyRelatedField(
+        queryset=Employee.objects.all(),
+        write_only=True
+    )
+
+    employee_info = EmployeeReadOnlySerializer(source='employee', read_only=True)
 
     class Meta:
         model = Attendance
         fields = "__all__"
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['employee'] = rep.pop('employee_info')
+        return rep

@@ -9,6 +9,8 @@ export const EMPLOYEE_DELETE = API_BASE_URL + 'employees/:pk';
 
 /** ATTENDANCE APIs */
 export const ATTENDANCE = API_BASE_URL + 'attendance';
+export const ATTENDANCE_GET = API_BASE_URL + 'attendance/:pk';
+export const ATTENDANCE_UPDATE = API_BASE_URL + 'attendance/:pk';
 export const EMPLOYEE_ATTENDANCE = API_BASE_URL + 'employees/:pk/attendance';
 export const ATTENDANCE_ADD = API_BASE_URL + 'attendance';
 
