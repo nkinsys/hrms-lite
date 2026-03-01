@@ -4,8 +4,9 @@ import Dashboard from "./pages/Dashboard";
 import Employees from "./pages/Employees/Index";
 import AddorEditEmployee from "./pages/Employees/Edit"; 
 import Attendance from "./pages/Attendance/Index";
-import MarkAttendance from "./pages/Attendance/Register";
-import EmployeeAttendance from "./pages/Employees/Attendance"; 
+import EmployeeAttendance from "./pages/Employees/Attendance";
+import MarkAttendance from "./pages/Attendance/New";
+import RegisterEmployeeAttendance from "./pages/Attendance/Register"; 
 import NoPage from "./pages/NoPage";
 
 export default class AppRouter extends React.Component {
@@ -20,6 +21,7 @@ export default class AppRouter extends React.Component {
                         <Route path="register" element={<AddorEditEmployee />} />
                         <Route path=":pk/edit" element={<AddorEditEmployee />} />
                         <Route path=":pk/attendance" element={<EmployeeAttendance />} />
+                        <Route path=":pk/attendance/register" element={<RegisterEmployeeAttendance />} />
                     </Route>
                     <Route path="attendance">
                         <Route index element={<Attendance />} />

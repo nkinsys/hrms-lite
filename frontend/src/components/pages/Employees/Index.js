@@ -1,6 +1,6 @@
 import TwoColumnsLeft from "../../layouts/TwoColumnsLeft";
 import { Box, Button, useTheme } from "@mui/material";
-import { EditRounded, SendRounded, VisibilityRounded } from "@mui/icons-material";
+import { EditRounded, HowToReg, SendRounded } from "@mui/icons-material";
 import DataGrid, { ActionCellItem } from "../../elements/DataGrid";
 import { MODE_DARK, tokens } from "../../../scripts/theme";
 import { EMPLOYEES } from "../../../constants/URL";
@@ -59,6 +59,25 @@ function Index() {
             minWidth: 155
         },
         {
+            field: "attendance_status",
+            headerName: "Status",
+            resizable: false,
+            type: "string",
+            minWidth: 110,
+            valueGetter: (value) => {
+                switch (value) {
+                    case 0:
+                        return "Absent";
+
+                    case 1:
+                        return "Present";
+
+                    default:
+                        return "Pending";
+                }
+            }
+        },
+        {
             field: 'actions',
             align: "center",
             headerName: "Actions",
@@ -68,35 +87,44 @@ function Index() {
             resizable: false,
             type: 'actions',
             minWidth: 115,
-            getActions: (params) => [
-                <ActionCellItem
-                    link={"/employees/" + params.id + "/view"}
-                    label="View"
-                    icon={<VisibilityRounded />}
-                    title="View"
-                    sx={{
-                        color: theme.palette.mode === MODE_DARK ? theme.palette.info.main : colors.grey[500]
-                    }}
-                />,
-                <ActionCellItem
-                    link={"/employees/" + params.id + "/edit"}
-                    label="Edit"
-                    icon={<EditRounded />}
-                    title="Edit"
-                    sx={{
-                        color: theme.palette.mode === MODE_DARK ? theme.palette.secondary.main : colors.grey[500]
-                    }}
-                />,
-                <ActionCellItem
-                    link={"/employees/" + params.id + "/attendance"}
-                    label="Attendance"
-                    icon={<SendRounded />}
-                    title="Attendance"
-                    sx={{
-                        color: theme.palette.mode === MODE_DARK ? theme.palette.error.main : colors.grey[500]
-                    }}
-                />
-            ],
+            getActions: (params) => {
+                let actions = [
+                    <ActionCellItem
+                        link={"/employees/" + params.id + "/edit"}
+                        label="Edit"
+                        icon={<EditRounded />}
+                        title="Edit"
+                        sx={{
+                            color: theme.palette.mode === MODE_DARK ? theme.palette.secondary.main : colors.grey[500]
+                        }}
+                    />,
+                    <ActionCellItem
+                        link={"/employees/" + params.id + "/attendance"}
+                        label="Attendance"
+                        icon={<SendRounded />}
+                        title="Attendance"
+                        sx={{
+                            color: theme.palette.mode === MODE_DARK ? theme.palette.error.main : colors.grey[500]
+                        }}
+                    />
+                ];
+
+                if (params.row.attendance_status === null) {
+                    actions.push(
+                        <ActionCellItem
+                            link={"/employees/" + params.id + "/attendance/register"}
+                            label="Mark Attendance"
+                            icon={<HowToReg />}
+                            title="Mark Attendance"
+                            sx={{
+                                color: theme.palette.mode === MODE_DARK ? theme.palette.error.main : colors.grey[500]
+                            }}
+                        />
+                    );
+                }
+
+                return actions;
+            },
         },
     ];
 

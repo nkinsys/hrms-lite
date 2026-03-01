@@ -6,7 +6,6 @@ export const EMPLOYEE_ADD = API_BASE_URL + 'employees';
 export const EMPLOYEE_GET = API_BASE_URL + 'employees/:pk';
 export const EMPLOYEE_UPDATE = API_BASE_URL + 'employees/:pk';
 export const EMPLOYEE_DELETE = API_BASE_URL + 'employees/:pk';
-export const EMPLOYEE_ISSUE = API_BASE_URL + 'employees/:pk/issue';
 
 /** ATTENDANCE APIs */
 export const ATTENDANCE = API_BASE_URL + 'attendance';
