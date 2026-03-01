@@ -4,6 +4,7 @@ import { MODE_DARK, tokens } from "../../scripts/theme";
 import { useEffect, useRef, useState } from "react";
 import Api from "../../services/Api";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const dateAdapter = new AdapterDayjs();
@@ -34,6 +35,7 @@ function DataGrid({ columns, url, defaultParams, identifier, multiselect, noRows
     const mapPageToNextCursor = useRef({});
     const totalCount = useRef(null);
     const [pageinfo, setPageInfo] = useState({ rows: [], page: 0, hasNextPage: false, totalRowCount: 0 });
+    const filterFields = useRef([]);
     const searchCriteria = useRef({
         pagination: {
             pageSize: 20,
@@ -54,17 +56,25 @@ function DataGrid({ columns, url, defaultParams, identifier, multiselect, noRows
         if (column.type === 'date') {
             column['valueFormatter'] = (value) => {
                 if (value) {
-                    return dateAdapter.formatByString(value, "DD/MM/YYYY");
+                    return dateAdapter.formatByString(dayjs(value), "DD/MM/YYYY");
                 }
                 return '';
             };
         } else if (column.type === 'dateTime') {
             column['valueFormatter'] = (value) => {
                 if (value) {
-                    return dateAdapter.formatByString(value, "DD/MM/YYYY HH:mm:ss");
+                    return dateAdapter.formatByString(dayjs(value), "DD/MM/YYYY HH:mm:ss");
                 }
                 return '';
             };
+        }
+
+        if (column.filterable !== false) {
+            if (column.filterFieldName) {
+                filterFields.current[column.field] = column.filterFieldName;
+            } else {
+                filterFields.current[column.field] = column.field;
+            }
         }
     });
 
@@ -112,7 +122,7 @@ function DataGrid({ columns, url, defaultParams, identifier, multiselect, noRows
             params.filter['items'] = [];
             searchCriteria.filter.items.forEach((item) => {
                 item = {
-                    'field': item.field,
+                    'field': filterFields.current[item.field],
                     'operator': item.operator,
                     'value': item.value
                 };
@@ -121,6 +131,21 @@ function DataGrid({ columns, url, defaultParams, identifier, multiselect, noRows
                 }
                 params.filter.items.push(item);
             });
+        }
+
+        if (searchCriteria.filter.hasOwnProperty('quickFilterValues')) {
+            if (searchCriteria.filter.quickFilterValues.length > 0) {
+                let value = searchCriteria.filter.quickFilterValues[0];
+                params.filter['items'] = [];
+                Object.values(filterFields.current).forEach((field) => {
+                    params.filter.items.push({
+                        'field': field,
+                        'operator': operators['contains'],
+                        'value': value
+                    });
+                });
+                params.filter['logicOperator'] = 'or';
+            }
         }
 
         searchCriteria.sort.forEach(function (item) {
@@ -238,9 +263,9 @@ function DataGrid({ columns, url, defaultParams, identifier, multiselect, noRows
     return (
         <>
             <Box
-                margin="0 0 20px 0"
+                margin="20px 0 20px 0"
                 sx={{
-                    "& .MuiDataGrid-root": { border: "none" },
+                    "& .MuiDataGrid-root": { border: "none", backgroundColor: "unset" },
                     "& .name-column--cell": { color: colors.greenAccent[300] },
                     "& .MuiDataGrid-columnHeaders": {
                         backgroundColor: theme.palette.mode === MODE_DARK ? colors.blueAccent[700] : "primary",
@@ -331,7 +356,7 @@ function DataGrid({ columns, url, defaultParams, identifier, multiselect, noRows
                         let id;
                         pageinfo.rows.forEach(row => {
                             id = row[identifier];
-                            if (newRowSelectionModel.includes(id)) {
+                            if (newRowSelectionModel.ids.includes(id)) {
                                 selected.current[id] = row;
                             } else if (selected.current.hasOwnProperty(id)) {
                                 delete selected.current[id];
@@ -342,7 +367,8 @@ function DataGrid({ columns, url, defaultParams, identifier, multiselect, noRows
                             setSelectedRows(Object.values(selected.current));
                         }
                     }}
-                    rowSelectionModel={rowSelectionModel}
+                    rowSelectionModel={{ 'type': 'include', 'ids': new Set(rowSelectionModel) }}
+                    showToolbar={true}
                     sx={{
                         "& .MuiDataGrid-cell": { border: "none", outline: "none" },
                         "& .MuiDataGrid-columnHeader": {

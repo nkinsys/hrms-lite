@@ -36,6 +36,15 @@ function Index() {
             minWidth: 200
         },
         {
+            field: "department",
+            headerName: "Department",
+            filterFieldName: "department__name",
+            flex: 1,
+            type: "string",
+            minWidth: 200,
+            valueGetter: (value) => value && value.name
+        },
+        {
             field: "created_at",
             headerName: "Created At",
             resizable: false,
