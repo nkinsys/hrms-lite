@@ -1,0 +1,1 @@
+web: cd hrms && python manage.py migrate --no-input && python manage.py collectstatic --no-input && gunicorn hrms.wsgi:application -b 0.0.0.0:$PORT

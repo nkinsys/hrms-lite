@@ -1,0 +1,71 @@
+#root {
+    min-height: 100vh;
+}
+
+#root .columns {
+    height: 100vh;
+}
+
+.column.main {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 0;
+}
+
+.page-main {
+    flex: auto;
+    width: 100%;
+}
+
+.page-layout-2columns-left .sidebar-main {
+    order: -1;
+}
+
+.page-layout-3columns .sidebar-main {
+    order: -1;
+}
+
+@media all and (min-width: 768px) {
+    .page-layout-2columns-left .column.main,
+    .page-layout-2columns-right .column.main,
+    .page-layout-3columns .column.main {
+        width: 75%;
+    }
+
+    .page-layout-2columns-left .sidebar-main,
+    .page-layout-2columns-right .sidebar-main,
+    .page-layout-3columns .sidebar-main {
+        max-width: 25%;
+    }
+
+    .page-layout-3columns .column.main .content {
+        width: 75%;
+    }
+
+    .page-layout-3columns .sidebar-secondary {
+        max-width: 25%;
+    }
+}
+
+@media all and (min-width: 1200px) {
+    .page-layout-2columns-left .column.main,
+    .page-layout-2columns-right .column.main,
+    .page-layout-3columns .column.main {
+        width: 83.333333%;
+    }
+
+    .page-layout-2columns-left .sidebar-main,
+    .page-layout-2columns-right .sidebar-main,
+    .page-layout-3columns .sidebar-main {
+        max-width: 16.666667%;
+    }
+
+    .page-layout-3columns .column.main .content {
+        width: 83.333333%;
+    }
+
+    .page-layout-3columns .sidebar-secondary {
+        max-width: 16.666667%;
+    }
+}
