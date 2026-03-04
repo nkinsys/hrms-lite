@@ -1,4 +1,4 @@
-import DocumentMeta from "react-document-meta";
+import DocumentMeta from "../fragments/DocumentMeta";
 import Footer from "../fragments/Footer";
 import Header from "../fragments/Header";
 import Empty from "./Layout";
@@ -10,7 +10,7 @@ import Dialog from "../fragments/Dialog";
 import Loader from "../fragments/Loader";
 
 export default class TwoColumnsLeft extends Empty {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.class = "page-layout-2columns-left";

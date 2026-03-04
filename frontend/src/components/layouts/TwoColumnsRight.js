@@ -1,4 +1,4 @@
-import DocumentMeta from "react-document-meta";
+import DocumentMeta from "../fragments/DocumentMeta";
 import Footer from "../fragments/Footer";
 import Header from "../fragments/Header";
 import Empty from "./Layout";

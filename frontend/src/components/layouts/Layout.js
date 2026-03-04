@@ -1,5 +1,5 @@
 import React from "react";
-import DocumentMeta from "react-document-meta";
+import DocumentMeta from "../fragments/DocumentMeta";
 import Column from "../elements/Column";
 import Dialog from "../fragments/Dialog";
 
@@ -7,13 +7,9 @@ const meta = {
     title: '',
     description: "Demo project for React JS",
     canonical: null,
-    meta: {
-        charset: "utf-8",
-        name: {
-            "viewport": "width=device-width, initial-scale=1",
-            "theme-color": "#000000",
-            "keywords": "react,react-js,react.js,reactjs"
-        }
+    tags: {
+        keywords: "react,react-js,react.js,reactjs",
+        robots: "NOINDEX NOFOLLOW"
     }
 };
 

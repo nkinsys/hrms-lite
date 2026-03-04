@@ -74,6 +74,7 @@ function Edit() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const attendance = useRef(null);
+    const title = useRef("Mark Attendance");
     const pageTitle = useRef("");
     const attendanceSchema = useRef(null);
 
@@ -101,6 +102,7 @@ function Edit() {
                 request = getAttendance(pk).then((data) => {
                     data.date = dayjs(data.date);
                     attendance.current = data;
+                    title.current = `${attendance.current.employee.name} - ${attendance.current.date.format('D MMM, YYYY')} | Attendance`;
                     pageTitle.current = `${attendance.current.employee.name} - ${attendance.current.date.format('D MMM, YYYY')} Attendance`
                 });
             } else {
@@ -115,8 +117,10 @@ function Edit() {
 
             request.then(() => {
                 if (pk || period === 'current') {
+                    title.current = `${attendance.current.employee.name} - ${attendance.current.date.format('D MMM, YYYY')} | Attendance`;
                     pageTitle.current = `${attendance.current.employee.name} - ${attendance.current.date.format('D MMM, YYYY')} Attendance`
                 } else {
+                    title.current = `${attendance.current.employee.name} | Attendance`;
                     pageTitle.current = `${attendance.current.employee.name} Attendance`
                 }
             }).catch((err) => {
@@ -166,7 +170,7 @@ function Edit() {
     };
 
     return (
-        <TwoColumnsLeft meta={{ title: "Mark Attendance" }} pageTitle={pageTitle.current}>
+        <TwoColumnsLeft meta={{ title: title.current }} pageTitle={pageTitle.current}>
             {loading && <Box className="column-main-center">
                 <CircularProgress sx={{ color: theme.palette.mode === MODE_DARK ? "secondary.main" : colors.grey[100] }} />
             </Box>}
