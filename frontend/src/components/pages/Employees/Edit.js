@@ -175,38 +175,41 @@ function Edit() {
         pageTitle.current = 'New Employee';
     }
 
-    useEffect(function () {
-        departments.current = storage.get('departments');
-        if (!departments.current) {
-            departments.current = [];
-        }
+    useEffect(() => {
+        let isMounted = true;
 
-        if (departments.current.length === 0) {
+        const loadData = async () => {
+            setLoading(true);
+
             try {
-                departments.current = getDepartments();
-                storage.set('departments', departments.current);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        } else {
-            setLoading(false);
-        }
+                let cached = storage.get('departments') || [];
+                if (cached.length === 0) {
+                    cached = getDepartments();
+                    storage.set('departments', cached);
+                }
+                departments.current = cached;
 
-        if (pk) {
-            if (!loading && !error && !employee.current) {
-                setLoading(true);
-                getEmployee(pk).then((data) => {
-                    employee.current = data;
-                    title.current = data.name + ' | Employees';
-                    pageTitle.current = data.name;
-                }).catch((err) => {
-                    setError(err.message);
-                }).finally(() => setLoading(false));
+                if (pk && !employee.current) {
+                    await getEmployee(pk)
+                        .then((data) => {
+                            employee.current = data;
+                            title.current = `${data.name} | Employees`;
+                            pageTitle.current = data.name;
+                        });
+                }
+            } catch (err) {
+                if (isMounted) setError(err.message);
+            } finally {
+                if (isMounted) setLoading(false);
             }
-        }
-    }, [storage, pk, loading, error]);
+        };
+
+        loadData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [storage, pk]);
 
     async function handleSubmit(values, actions) {
         setError('');
