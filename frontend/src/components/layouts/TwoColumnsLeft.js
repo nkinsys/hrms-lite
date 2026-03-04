@@ -7,6 +7,7 @@ import Column from "../elements/Column";
 import Message from "../fragments/Message";
 import { Box, Grid } from "@mui/material";
 import Dialog from "../fragments/Dialog";
+import Loader from "../fragments/Loader";
 
 export default class TwoColumnsLeft extends Empty {
     constructor (props) {
@@ -58,6 +59,7 @@ export default class TwoColumnsLeft extends Empty {
         return (
             <>
                 <DocumentMeta {...this.state.meta}></DocumentMeta>
+                <Loader name="global"></Loader>
                 <Grid container className="columns">
                     <Grid size={{ xs: 12, md: 9, xl: 10 }} className="column main">
                         <Header pageTitle={this.props.pageTitle}></Header>

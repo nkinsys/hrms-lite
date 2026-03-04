@@ -14,6 +14,7 @@ import { KeyboardBackspace } from "@mui/icons-material";
 import { alert } from "../../fragments/Dialog";
 import dayjs from "dayjs";
 import validationSchema from "../../../scripts/validation-schema";
+import { emitCustomEvent } from "../../../services/Event";
 
 /**
  * @param {Number} pk
@@ -127,6 +128,7 @@ function Edit() {
     async function handleSubmit(values, actions) {
         setError('');
 
+        emitCustomEvent('loader.global', true);
         let request;
         if (pk) {
             const data = {
@@ -157,7 +159,10 @@ function Edit() {
             } else {
                 setError('Something went wrong! Kindly try after sometime.');
             }
-        }).finally(() => actions.setSubmitting(false));
+        }).finally(() => {
+            actions.setSubmitting(false);
+            emitCustomEvent('loader.global', false);
+        });
     };
 
     return (

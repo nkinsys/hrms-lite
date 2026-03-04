@@ -44,13 +44,12 @@ function Index() {
         {
             field: "date",
             headerName: "Date",
-            flex: 1,
+            resizable: false,
             type: "date",
             minWidth: 100
         },
         {
             field: "status",
-            align: "left",
             headerName: "Status",
             resizable: false,
             type: "string",
@@ -68,6 +67,13 @@ function Index() {
         {
             field: "created_at",
             headerName: "Created At",
+            resizable: false,
+            type: "dateTime",
+            minWidth: 155
+        },
+        {
+            field: "updated_at",
+            headerName: "Updated At",
             resizable: false,
             type: "dateTime",
             minWidth: 155

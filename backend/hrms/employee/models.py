@@ -49,6 +49,7 @@ class Attendance(models.Model):
         help_text=_("Employee attendance status."),
     )
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("modified at"), auto_now=True)
 
     class Meta:
         constraints = [

@@ -18,3 +18,6 @@ class CustomPagination(CursorPagination):
                     self.ordering.append(field)
 
         return super().get_ordering(request, queryset, view)
+
+class AttendancePagination(CustomPagination):
+    ordering = ("-date", "employee")

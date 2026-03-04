@@ -11,6 +11,7 @@ import { MODE_DARK, tokens } from "../../../scripts/theme";
 import { alert, confirm } from "../../fragments/Dialog";
 import { KeyboardBackspace } from "@mui/icons-material";
 import { useStorage } from "../../../services/Storage";
+import { emitCustomEvent } from "../../../services/Event";
 
 /**
  * @returns {Object}
@@ -175,7 +176,7 @@ function Edit() {
     }
 
     useEffect(function () {
-        // departments.current = storage.get('departments');
+        departments.current = storage.get('departments');
         if (!departments.current) {
             departments.current = [];
         }
@@ -210,6 +211,7 @@ function Edit() {
     async function handleSubmit(values, actions) {
         setError('');
 
+        emitCustomEvent('loader.global', true);
         submit(pk, values).then((data) => {
             alert({
                 title: "Success",
@@ -222,7 +224,10 @@ function Edit() {
             } else {
                 actions.setErrors(err);
             }
-        }).finally(() => actions.setSubmitting(false));
+        }).finally(() => {
+            actions.setSubmitting(false);
+            emitCustomEvent('loader.global', false);
+        });
     };
 
     function handleDelete(data, setSubmitting) {
@@ -231,6 +236,7 @@ function Edit() {
             content: "Are you sure you want to delete employee " + data.name + "?",
             callback: (result) => {
                 if (result) {
+                    emitCustomEvent('loader.global', true);
                     remove(pk).then(() => {
                         alert({
                             title: "Success",
@@ -239,7 +245,10 @@ function Edit() {
                         });
                     }).catch((err) => {
                         setError(err.message);
-                    }).finally(() => setSubmitting(false));
+                    }).finally(() => {
+                        setSubmitting(false);
+                        emitCustomEvent('loader.global', true);
+                    });
                 } else {
                     setSubmitting(false);
                 }
@@ -377,7 +386,7 @@ function Edit() {
                                                 disabled={isSubmitting}
                                                 sx={{ mb: 3, ml: { sm: "2rem" } }}
                                                 onClick={() => {
-                                                    handleDelete(values, setSubmitting);
+                                                    handleDelete(employee.current, setSubmitting);
                                                 }}
                                             >
                                                 <Typography variant="button" fontWeight="bold">Delete</Typography>

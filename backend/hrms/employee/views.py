@@ -9,7 +9,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from hrms.filters import CustomFilterBackend
-from hrms.pagination import CustomPagination
+from hrms.pagination import CustomPagination, AttendancePagination
 
 # Create your views here.
 
@@ -33,6 +33,7 @@ class EmployeeModelViewSet(viewsets.ModelViewSet):
 class AttendanceModelViewSet(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
+    pagination_class = AttendancePagination
 
     def get_queryset(self):
         queryset = Attendance.objects.select_related('employee', 'employee__department')
